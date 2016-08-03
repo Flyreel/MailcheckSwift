@@ -61,7 +61,7 @@ let result: MailcheckResult = Mailcheck.check("test@mydomain.co", domains: ["myd
 
 Or add to the default list:
 ```Swift
-let result: MailcheckResult = Mailcheck.check:@"test@mydomain.co" extraDomains:@[@"mydomain.co"] extraTopLevelDomains:@[@"co"]];
+let result: MailcheckResult = Mailcheck.check:@"test@mydomain.co" extraDomains:["mydomain.co"] extraTopLevelDomains:["co"]];
 ```
 
 Maintainers
