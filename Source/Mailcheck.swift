@@ -10,26 +10,26 @@ import Foundation
 
 //Returned form check functions
 public struct MailcheckResult {
-    var valid: Bool //True if the e-mail is a valid format
-    var suggestion: MailcheckSuggestion?
+    public var valid: Bool //True if the e-mail is a valid format
+    public var suggestion: MailcheckSuggestion?
     
-    init(valid: Bool, suggestion: MailcheckSuggestion) {
+    public init(valid: Bool, suggestion: MailcheckSuggestion) {
         self.valid = valid
         self.suggestion = suggestion
     }
     
-    init(valid: Bool) {
+    public init(valid: Bool) {
         self.valid = valid
     }
 }
 
 //Returned from suggest functions
 public struct MailcheckSuggestion {
-    var address: String //the name address of the e-mail (e.g. frank in frank@whitehouse.gov)
-    var domain: String //the suggested correction of domain (e.g. whitehouse.gov if whitehouse.gv is entered)
-    var full: String //the full address that is being suggested (e.g. frank@whitehouse.gov)
+    public var address: String //the name address of the e-mail (e.g. frank in frank@whitehouse.gov)
+    public var domain: String //the suggested correction of domain (e.g. whitehouse.gov if whitehouse.gv is entered)
+    public var full: String //the full address that is being suggested (e.g. frank@whitehouse.gov)
     
-    init(address: String, domain: String, full: String) {
+    public init(address: String, domain: String, full: String) {
         self.address = address
         self.domain = domain
         self.full = full
