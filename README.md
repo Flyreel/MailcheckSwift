@@ -11,7 +11,7 @@ Usage
 -----
 
 ```Swift
-#import MailcheckSwift
+import MailcheckSwift
 let result: MailcheckSuggestion? = Mailcheck.suggest("test@hotnail.com")
 ```
 
@@ -41,7 +41,7 @@ Checking if an e-mail is valid
 Checks to see if an e-mail is valid format while also returning a suggestion
 
 ```Swift
-#import MailcheckSwift
+import MailcheckSwift
 let result = Mailcheck.check("test@hotnail.com")
 ```
 
