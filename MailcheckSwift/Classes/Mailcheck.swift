@@ -38,17 +38,17 @@ public struct MailcheckSuggestion {
 
 public class Mailcheck {
     
-    private static let defaultDomains = ["yahoo.com", "google.com", "hotmail.com", "gmail.com", "me.com", "aol.com", "mac.com", "live.com", "comcast.net", "googlemail.com", "msn.com", "hotmail.co.uk", "yahoo.co.uk", "facebook.com", "verizon.net", "sbcglobal.net", "att.net", "gmx.com", "mail.com"]
+    public static let defaultDomains = ["yahoo.com", "google.com", "hotmail.com", "gmail.com", "me.com", "aol.com", "mac.com", "live.com", "comcast.net", "googlemail.com", "msn.com", "hotmail.co.uk", "yahoo.co.uk", "facebook.com", "verizon.net", "sbcglobal.net", "att.net", "gmx.com", "mail.com"]
     
-    private static let defaultTopLevelDomains = ["co.uk", "com", "net", "org", "info", "edu", "gov", "mil"]
+    public static let defaultTopLevelDomains = ["co.uk", "com", "net", "org", "info", "edu", "gov", "mil"]
     
     public static var threshold = 3
     
-    public class func check(email: String, extraDomains: [String], extraTopLevelDomains: [String]) -> MailcheckResult {
+    public class func check(_ email: String, extraDomains: [String], extraTopLevelDomains: [String]) -> MailcheckResult {
         return self.check(email, domains: defaultDomains + [], topLevelDomains: defaultTopLevelDomains + [])
     }
     
-    public class func check(email: String, domains: [String] = defaultDomains, topLevelDomains: [String] = defaultTopLevelDomains) -> MailcheckResult {
+    public class func check(_ email: String, domains: [String] = defaultDomains, topLevelDomains: [String] = defaultTopLevelDomains) -> MailcheckResult {
         if let suggestion = self.suggest(email, domains: domains, topLevelDomains: topLevelDomains) {
             return MailcheckResult(valid: email.isEmail, suggestion: suggestion)
         } else {
@@ -56,22 +56,22 @@ public class Mailcheck {
         }
     }
     
-    public class func suggest(email: String, extraDomains: [String], extraTopLevelDomains: [String]) -> MailcheckSuggestion? {
+    public class func suggest(_ email: String, extraDomains: [String], extraTopLevelDomains: [String]) -> MailcheckSuggestion? {
         return self.suggest(email, domains: defaultDomains + extraDomains, topLevelDomains: defaultTopLevelDomains + extraTopLevelDomains)
     }
     
-    public class func suggest(email: String, domains: [String] = defaultDomains, topLevelDomains: [String] = defaultTopLevelDomains) -> MailcheckSuggestion? {
+    public class func suggest(_ email: String, domains: [String] = defaultDomains, topLevelDomains: [String] = defaultTopLevelDomains) -> MailcheckSuggestion? {
         
-        if let emailComponents = self.splitEmail(email.lowercaseString) {
-            if let closestDomain = self.findClosestDomain(emailComponents.domain, domains: domains) where closestDomain != emailComponents.domain {
+        if let emailComponents = self.splitEmail(email.lowercased()) {
+            if let closestDomain = self.findClosestDomain(emailComponents.domain, domains: domains), closestDomain != emailComponents.domain {
                 return MailcheckSuggestion(address: emailComponents.address, domain: closestDomain, full: "\(emailComponents.address)@\(closestDomain)")
             } else if let closestTopLevelDomain = self.findClosestDomain(emailComponents.topLevelDomain, domains: topLevelDomains) {
-                if emailComponents.domain.length > 0 && closestTopLevelDomain != emailComponents.topLevelDomain {
+                if emailComponents.domain.count > 0 && closestTopLevelDomain != emailComponents.topLevelDomain {
                     let domain = emailComponents.domain
-                    var domainParts = domain.componentsSeparatedByString(".")
+                    var domainParts = domain.components(separatedBy: ".")
                     domainParts.removeLast()
                     domainParts.append(closestTopLevelDomain)
-                    let suggestedDomain = domainParts.joinWithSeparator(".")
+                    let suggestedDomain = domainParts.joined(separator: ".")
                     return MailcheckSuggestion(address: emailComponents.address, domain: suggestedDomain, full: "\(emailComponents.address)@\(suggestedDomain)")
                 }
             }
@@ -80,7 +80,7 @@ public class Mailcheck {
         return nil
     }
     
-    private class func findClosestDomain(domain: String, domains: [String]) -> String? {
+    private class func findClosestDomain(_ domain: String, domains: [String]) -> String? {
         
         var distance = 0
         var minDistance = 99
@@ -98,26 +98,26 @@ public class Mailcheck {
             }
         }
         
-        if let foundDomain = closestDomain where minDistance <= self.threshold {
+        if let foundDomain = closestDomain, minDistance <= self.threshold {
             return foundDomain
         }
         
         return nil
     }
     
-    private class func sift3Distance(firstString firstString: String, secondString: String) -> Int {
+    private class func sift3Distance(firstString: String, secondString: String) -> Int {
         // sift3: http://siderite.blogspot.com/2007/04/super-fast-and-accurate-string-distance.html
         
-        if firstString.length == 0 {
-            if secondString.length == 0 {
+        if firstString.count == 0 {
+            if secondString.count == 0 {
                 return 0
             } else {
-                return secondString.length
+                return secondString.count
             }
         }
         
-        if secondString.length == 0 {
-            return firstString.length
+        if secondString.count == 0 {
+            return firstString.count
         }
         
         var characterIndex = 0
@@ -126,10 +126,10 @@ public class Mailcheck {
         var lcs = 0
         let maxOffset = 5
         
-        while((characterIndex + offset1 < firstString.length) && (characterIndex + offset2 < secondString.length)) {
+        while((characterIndex + offset1 < firstString.count) && (characterIndex + offset2 < secondString.count)) {
             
-            let stringOneCurrentCharacter = firstString[firstString.startIndex.advancedBy(characterIndex + offset1)]
-            let stringTwoCurrentCharacter = secondString[secondString.startIndex.advancedBy(characterIndex + offset2)]
+            let stringOneCurrentCharacter = firstString[characterIndex + offset1]
+            let stringTwoCurrentCharacter = secondString[characterIndex + offset2]
             if stringOneCurrentCharacter == stringTwoCurrentCharacter {
                 lcs += 1
             } else {
@@ -137,14 +137,14 @@ public class Mailcheck {
                 offset2 = 0
                 for offset in 0..<maxOffset {
                     let currentOffset = characterIndex + offset
-                    if (currentOffset < firstString.length) &&
-                        (firstString[firstString.startIndex.advancedBy(currentOffset)] == secondString[secondString.startIndex.advancedBy(characterIndex)]) {
+                    if (currentOffset < firstString.count) &&
+                        (firstString[currentOffset] == secondString[characterIndex]) {
                         offset1 = offset
                         break
                     }
                     
-                    if (currentOffset < secondString.length) &&
-                        (secondString[secondString.startIndex.advancedBy(currentOffset)] == firstString[firstString.startIndex.advancedBy(characterIndex)]) {
+                    if (currentOffset < secondString.count) &&
+                        (secondString[currentOffset] == firstString[characterIndex]) {
                         offset2 = offset
                         break
                     }
@@ -153,12 +153,12 @@ public class Mailcheck {
             characterIndex += 1
         }
         
-        return (firstString.length + secondString.length) / 2 - lcs
+        return (firstString.count + secondString.count) / 2 - lcs
     }
     
-    private class func splitEmail(email: String) -> EmailComponents? {
+    private class func splitEmail(_ email: String) -> EmailComponents? {
         
-        var parts = email.componentsSeparatedByString("@")
+        var parts = email.components(separatedBy: "@")
         
         if parts.count < 2 {
             return nil
@@ -172,7 +172,7 @@ public class Mailcheck {
         
         let domain = parts.last!
         parts.removeLast()
-        let domainParts = domain.componentsSeparatedByString(".")
+        let domainParts = domain.components(separatedBy: ".")
         var tld = ""
         
         if domainParts.count == 0 {
@@ -183,10 +183,10 @@ public class Mailcheck {
             tld = domainParts.first!
         } else {
             // the address has a domain and a top-level domain
-            tld = domainParts[1..<domainParts.endIndex].joinWithSeparator(".")
+            tld = domainParts[1..<domainParts.endIndex].joined(separator: ".")
         }
         
-        return EmailComponents(topLevelDomain: tld, domain: domain, address: parts.joinWithSeparator("@"))
+        return EmailComponents(topLevelDomain: tld, domain: domain, address: parts.joined(separator: "@"))
     }
     
 }
@@ -204,14 +204,44 @@ private struct EmailComponents {
 }
 
 private extension String {
-    var length: Int {
-        return self.characters.count
-    }
-    
     var isEmail: Bool {
         let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,20}"
         let emailTest = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
-        let result = emailTest.evaluateWithObject(self)
+        let result = emailTest.evaluate(with: self)
         return result
     }
 }
+
+//MARK: Extensions for string subscripting
+private extension StringProtocol {
+    
+    var string: String { return String(self) }
+    
+    subscript(offset: Int) -> Element {
+        return self[index(startIndex, offsetBy: offset)]
+    }
+    
+    subscript(_ range: CountableRange<Int>) -> SubSequence {
+        return prefix(range.lowerBound + range.count)
+            .suffix(range.count)
+    }
+    subscript(range: CountableClosedRange<Int>) -> SubSequence {
+        return prefix(range.lowerBound + range.count)
+            .suffix(range.count)
+    }
+    
+    subscript(range: PartialRangeThrough<Int>) -> SubSequence {
+        return prefix(range.upperBound.advanced(by: 1))
+    }
+    subscript(range: PartialRangeUpTo<Int>) -> SubSequence {
+        return prefix(range.upperBound)
+    }
+    subscript(range: PartialRangeFrom<Int>) -> SubSequence {
+        return suffix(Swift.max(0, count - range.lowerBound))
+    }
+}
+
+private extension Substring {
+    var string: String { return String(self) }
+}
+
