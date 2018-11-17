@@ -49,10 +49,11 @@ public class Mailcheck {
     }
     
     public class func check(_ email: String, domains: [String] = defaultDomains, topLevelDomains: [String] = defaultTopLevelDomains) -> MailcheckResult {
+        let isValidEmail = self.isEmail(string: email)
         if let suggestion = self.suggest(email, domains: domains, topLevelDomains: topLevelDomains) {
-            return MailcheckResult(valid: email.isEmail, suggestion: suggestion)
+            return MailcheckResult(valid: isValidEmail, suggestion: suggestion)
         } else {
-            return MailcheckResult(valid: email.isEmail)
+            return MailcheckResult(valid: isValidEmail)
         }
     }
     
@@ -80,7 +81,7 @@ public class Mailcheck {
         return nil
     }
     
-    private class func findClosestDomain(_ domain: String, domains: [String]) -> String? {
+    internal class func findClosestDomain(_ domain: String, domains: [String]) -> String? {
         
         var distance = 0
         var minDistance = 99
@@ -189,9 +190,16 @@ public class Mailcheck {
         return EmailComponents(topLevelDomain: tld, domain: domain, address: parts.joined(separator: "@"))
     }
     
+    private class func isEmail(string: String) -> Bool {
+        let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,20}"
+        let emailTest = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
+        let result = emailTest.evaluate(with: string)
+        return result
+    }
+    
 }
 
-private struct EmailComponents {
+internal struct EmailComponents {
     let topLevelDomain: String
     let domain: String
     let address: String
@@ -200,15 +208,6 @@ private struct EmailComponents {
         self.topLevelDomain = topLevelDomain
         self.domain = domain
         self.address = address
-    }
-}
-
-private extension String {
-    var isEmail: Bool {
-        let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,20}"
-        let emailTest = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
-        let result = emailTest.evaluate(with: self)
-        return result
     }
 }
 
