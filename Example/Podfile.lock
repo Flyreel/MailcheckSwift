@@ -18,7 +18,7 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  MailcheckSwift: 8fde0c6a0718bd5da3d4e82164ca7ca39eadcb27
+  MailcheckSwift: 809e0a07d80cf6a2bd05a66dcd03653e7ab4629d
   Nimble: 04f732da099ea4d153122aec8c2a88fd0c7219ae
   Quick: 2623cb30d7a7f41ca62f684f679586558f483d46
 

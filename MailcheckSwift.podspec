@@ -7,6 +7,7 @@ Pod::Spec.new do |s|
   s.authors = { 'Bryce Hammond' => 'bryce@flyreel.co' }
   s.source = { :git => 'https://github.com/Flyreel/MailcheckSwift.git', :tag => "#{s.version}" }
 
+  s.swift_version = '4.2'
   s.ios.deployment_target = '8.0'
 
   s.source_files = 'MailcheckSwift/Classes/**/*'
