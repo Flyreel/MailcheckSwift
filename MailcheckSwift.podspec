@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = 'MailcheckSwift'
-  s.version = '0.1'
+  s.version = '0.2.0'
   s.license = 'MIT'
   s.summary = 'Swift implementation of Mailcheck (http://getmailcheck.org/). Suggest corrections for misspelled email addresses.'
   s.homepage = 'https://github.com/Flyreel/MailcheckSwift'
